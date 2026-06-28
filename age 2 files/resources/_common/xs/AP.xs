@@ -1,8 +1,8 @@
 include "./ItemHandler.xs";
 include "./APavilion.xs";
+include "./ScenarioLocations.xs";
 
 int itemArray = -1;
-int locationArray = -1;
 
 int clientPing = -1;
 int lastPing = -1;
@@ -46,10 +46,11 @@ void AP_Write()
     xsWriteInt(completed);
     xsWriteInt(scenarioId);
     for (i = 0; < 30) {
-    xsWriteInt(i);
+        xsWriteInt(i);
     }
-    for (i = 0; < xsArrayGetSize(locationArray)) {
-        xsWriteInt(xsArrayGetInt(locationArray, i));
+    int sendingLocations = FilterCompletedNotSent();
+    for (i = 0; < xsArrayGetSize(sendingLocations)) {
+        xsWriteInt(xsArrayGetInt(sendingLocations, i));
     }
     xsCloseFile();
 }
@@ -106,7 +107,7 @@ void AP_Read()
     }
     int free_locations = xsReadInt();
     if (free_locations == 1) {
-        xsEnableRule("FreeLocations");
+        xsEnableRule("MarkServerLocations");
     }
     int units = xsReadInt();
     int messages = xsReadInt();
@@ -119,9 +120,8 @@ void AP_Read()
 
 void AP_Check_Location(int locationId = -1)
 {
-    int locationSize = xsArrayGetSize(locationArray);
-    xsArrayResizeInt(locationArray, locationSize + 1);
-    xsArraySetInt(locationArray, locationSize, locationId);
+    vector location = GetLocationById(locationId);
+    structSetBool(location, "scenarioComplete", true);
 }
 
 void SetScenarioId(int id = 0) {
@@ -187,11 +187,12 @@ rule InitAP
     xsChatData("Client Connected!");
 
     itemArray = xsArrayCreateInt(12, -1, "Item Array");
-    locationArray = xsArrayCreateInt(0, -1, "Location Array");
     GiveStartupItems();
     
     xsEffectAmount(cModifyTech, victoryTech, cAttrSetState, cAttributeDisable);
     
+    initializeStructsScript();
+    InitLocations();
     InitBuildsanity();
     GiveStartupBuildings();
     InitScenarioSpecific();
@@ -244,7 +245,7 @@ rule FreeItems
     xsDisableSelf();
 }
 
-rule FreeLocations
+rule MarkServerLocations
     inactive
     minInterval 1
     maxInterval 1
@@ -256,15 +257,10 @@ rule FreeLocations
     int locationCount = xsGetFileSize();
     for (i = 0; < locationCount) {
         int locationId = xsReadInt();
-        int arraySize = xsArrayGetSize(locationArray);
-        for (j = 0; < arraySize - 1) {
-            if (xsArrayGetInt(locationArray, j) == locationId) {
-                int nextLocation = xsArrayGetInt(locationArray, j + 1);
-                xsArraySetInt(locationArray, j, nextLocation);
-                xsArraySetInt(locationArray, j + 1, locationId);
-            }
+        vector location = GetLocationById(locationId);
+        if (location != cInvalidVector) {
+            structSetBool(location, "serverComplete", true);
         }
-        xsArrayResizeInt(locationArray, arraySize - 1);
     }
     xsCloseFile();
     xsDisableSelf();

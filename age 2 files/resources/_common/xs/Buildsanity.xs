@@ -57,7 +57,6 @@ vector disableBuilding(string buildingName = "", int buildingId = -1, float cost
 }
 
 void InitBuildsanityStructs() {
-    initializeStructsScript();
     defineStruct("Building");
     defineStructAttribute("Building", "name", TYPE_STRING);
     defineStructAttribute("Building", "id", TYPE_INT);

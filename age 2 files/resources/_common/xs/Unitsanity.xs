@@ -1,5 +1,35 @@
-// Economy
+include "structs.xs";
 
+vector unitsanity = cInvalidVector;
+
+vector disableUnit(string name = "", int id = -1, float cost = 0.0, int locationId = -1) {
+    vector unit = new("Unit");
+    structSetString(unit, "name", name);
+    structSetInt(unit, "id", id);
+    structSetInt(unit, "playerCount", xsGetObjectCount(1, structGetInt(unit, "id")));
+    structSetFloat(unit, "resourceCost", cost);
+    structSetInt(unit, "locationId", locationId);
+    xsEffectAmount(cSetAttribute, id, cDisabledFlag, 1.0, 1);
+    return (unit);
+}
+
+void InitUnitsanityStructs() {
+    initializeStructsScript();
+    defineStruct("Unit");
+    defineStructAttribute("Unit", "name", TYPE_STRING);
+    defineStructAttribute("Unit", "id", TYPE_INT);
+    defineStructAttribute("Unit", "playerCount", TYPE_INT);
+    defineStructAttribute("Unit", "resourceCost", TYPE_FLOAT);
+    defineStructAttribute("Unit", "locationId", TYPE_INT);
+
+    defineStruct("Unitsanity");
+    defineStructAttribute("Unitsanity", "units", TYPE_STRUCT_ARRAY);
+    defineStructAttribute("Unitsanity", "currentUnitTotalCost", TYPE_FLOAT);
+
+    unitsanity = new("Unitsanity");
+    int units = xsArrayCreateVector(50, cInvalidVector, "p1-units");
+    structSetInt(unitsanity, "units", units);
+}
 
 // Town Center
 const int villager = 83;
@@ -274,21 +304,27 @@ void InitUnitsanityEconomy() {
 }
 
 void InitUnitsanityArchery() {
-    xsEffectAmount(cEnableObject, archer, cAttributeDisable, 0.0, 1);
-    xsEffectAmount(cEnableObject, crossbowman, cAttributeDisable, 0.0, 1);
-    xsEffectAmount(cEnableObject, arbalester, cAttributeDisable, 0.0, 1);
+    xsEffectAmount(cSetAttribute, archer, cDisabledFlag, 1.0, 1);
+    xsEffectAmount(cSetAttribute, crossbowman, cDisabledFlag, 1.0, 1);
+    xsEffectAmount(cSetAttribute, arbalester, cDisabledFlag, 1.0, 1);
+
     xsEffectAmount(cEnableObject, skirmisher, cAttributeDisable, 0.0, 1);
     xsEffectAmount(cEnableObject, elite_skirmisher, cAttributeDisable, 0.0, 1);
     xsEffectAmount(cEnableObject, imperial_skirmisher, cAttributeDisable, 0.0, 1);
+
     xsEffectAmount(cEnableObject, cavalry_archer, cAttributeDisable, 0.0, 1);
     xsEffectAmount(cEnableObject, heavy_cavalry_archer, cAttributeDisable, 0.0, 1);
+
     xsEffectAmount(cEnableObject, hand_cannoneer, cAttributeDisable, 0.0, 1);
     xsEffectAmount(cEnableObject, slinger, cAttributeDisable, 0.0, 1);
     xsEffectAmount(cEnableObject, grenadier, cAttributeDisable, 0.0, 1);
+
     xsEffectAmount(cEnableObject, genitour, cAttributeDisable, 0.0, 1);
     xsEffectAmount(cEnableObject, elite_genitour, cAttributeDisable, 0.0, 1);
+
     xsEffectAmount(cEnableObject, elephant_archer, cAttributeDisable, 0.0, 1);
     xsEffectAmount(cEnableObject, elite_elephant_archer, cAttributeDisable, 0.0, 1);
+
     xsEffectAmount(cEnableObject, xianbeiRaider, cAttributeDisable, 0.0, 1);
     xsEffectAmount(cEnableObject, bolasRider, cAttributeDisable, 0.0, 1);
     xsEffectAmount(cEnableObject, eliteBolasRider, cAttributeDisable, 0.0, 1);
@@ -301,6 +337,7 @@ void InitUnitsanityBarracks() {
     xsEffectAmount(cEnableObject, two_handed_swordsman, cAttributeDisable, 0.0, 1);
     xsEffectAmount(cEnableObject, champion, cAttributeDisable, 0.0, 1);
     xsEffectAmount(cEnableObject, legionary, cAttributeDisable, 0.0, 1);
+    
     xsEffectAmount(cEnableObject, spearman, cAttributeDisable, 0.0, 1);
     xsEffectAmount(cEnableObject, pikeman, cAttributeDisable, 0.0, 1);
     xsEffectAmount(cEnableObject, halberdier, cAttributeDisable, 0.0, 1);
