@@ -3,6 +3,8 @@ include "./AP.xs";
 
 void InitScenarioSpecific() {
   ScenarioSpecificInit("ATT2");
+  // Scenario-Specific - Not defeatsanity/relics
+  AddLocations(10200, 10208);
 }
 
 void main() {

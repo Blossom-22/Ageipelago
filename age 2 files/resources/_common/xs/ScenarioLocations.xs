@@ -23,18 +23,33 @@ vector GetLocationById(int id = -1) {
     return (cInvalidVector);
 }
 
-vector AddLocation(string locationName = "", int id = -1, bool scenarioComplete = false, bool serverComplete = false) {
+vector AddLocation(int id = -1, bool scenarioComplete = false, bool serverComplete = false) {
     vector location = new("Location");
-    structSetString(location, "name", locationName);
     structSetInt(location, "id", id);
     structSetBool(location, "scenarioComplete", scenarioComplete);
     structSetBool(location, "serverComplete", serverComplete);
     return (location);
 }
 
+int AddLocations(int idStart = -1, int idEnd = -1, bool scenarioComplete = false, bool serverComplete = false) {
+    if (idStart == -1 || idEnd == -1 || idStart > idEnd) {
+        xsChatData("Invalid start and end id for AddLocations: idStart = " + idStart + ", idEnd = " + idEnd);
+        return (-1);
+    }
+
+    int arrayLength = idEnd - idStart;
+    int array = xsArrayCreateVector(arrayLength, cInvalidVector);
+
+    for (i = idStart; < idEnd) {
+        vector location = AddLocation(i, scenarioComplete, serverComplete);
+        xsArraySetVector(array, i - idStart, location);
+    }
+
+    return (array);
+}
+
 void InitLocations() {
     defineStruct("Location");
-    defineStructAttribute("Location", "name", TYPE_STRING);
     defineStructAttribute("Location", "id", TYPE_INT);
     defineStructAttribute("Location", "scenarioComplete", TYPE_BOOL);
     defineStructAttribute("Location", "serverComplete", TYPE_BOOL);
@@ -67,37 +82,37 @@ int FilterCompletedNotSent() {
     return (filteredArray);
 }
 
-void SetScenarioComplete(int locationId = -1) {
+void SetScenarioLocationComplete(int locationId = -1) {
     vector location = GetLocationById(locationId);
     if (location == cInvalidVector) {
-        xsChatData("SetScenarioComplete: Location does not exist: %d", locationId);
+        xsChatData("SetScenarioLocationComplete: Location does not exist: %d", locationId);
     }
 
     structSetBool(location, "scenarioComplete", true);
 }
 
-bool IsScenarioComplete(int locationId = -1) {
+bool IsScenarioLocationComplete(int locationId = -1) {
     vector location = GetLocationById(locationId);
     if (location == cInvalidVector) {
-        xsChatData("IsScenarioComplete: Location does not exist: %d", locationId);
+        xsChatData("IsScenarioLocationComplete: Location does not exist: %d", locationId);
     }
 
     return (structGetBool(location, "scenarioComplete"));
 }
 
-void SetServerComplete(int locationId = -1) {
+void SetServerLocationComplete(int locationId = -1) {
     vector location = GetLocationById(locationId);
     if (location == cInvalidVector) {
-        xsChatData("SetServerComplete: Location does not exist: %d", locationId);
+        xsChatData("SetServerLocationComplete: Location does not exist: %d", locationId);
     }
 
     structSetBool(location, "serverComplete", true);
 }
 
-bool IsServerComplete(int locationId = -1) {
+bool IsServerLocationComplete(int locationId = -1) {
     vector location = GetLocationById(locationId);
     if (location == cInvalidVector) {
-        xsChatData("IsServerComplete: Location does not exist: %d", locationId);
+        xsChatData("IsServerLocationComplete: Location does not exist: %d", locationId);
     }
 
     return (structGetBool(location, "serverComplete"));

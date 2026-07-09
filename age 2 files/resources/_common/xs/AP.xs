@@ -1,6 +1,5 @@
 include "./ItemHandler.xs";
 include "./APavilion.xs";
-include "./ScenarioLocations.xs";
 
 int itemArray = -1;
 
@@ -120,8 +119,7 @@ void AP_Read()
 
 void AP_Check_Location(int locationId = -1)
 {
-    vector location = GetLocationById(locationId);
-    structSetBool(location, "scenarioComplete", true);
+    SetScenarioLocationComplete(locationId);
 }
 
 void SetScenarioId(int id = 0) {
@@ -257,10 +255,7 @@ rule MarkServerLocations
     int locationCount = xsGetFileSize();
     for (i = 0; < locationCount) {
         int locationId = xsReadInt();
-        vector location = GetLocationById(locationId);
-        if (location != cInvalidVector) {
-            structSetBool(location, "serverComplete", true);
-        }
+        SetServerLocationComplete(locationId);
     }
     xsCloseFile();
     xsDisableSelf();
