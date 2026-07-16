@@ -49,7 +49,11 @@ void AP_Write()
     }
     int sendingLocations = FilterCompletedNotSent();
     for (i = 0; < xsArrayGetSize(sendingLocations)) {
-        xsWriteInt(xsArrayGetInt(sendingLocations, i));
+        vector location = xsArrayGetVector(sendingLocations, i);
+        int locationId = structGetInt(location, "id");
+        if (locationId != -1) {
+            xsWriteInt(locationId);
+        }
     }
     xsCloseFile();
 }
@@ -126,7 +130,7 @@ void SetScenarioId(int id = 0) {
     scenarioId = id;
 }
 
-void ScenarioSpecificInit(string filename = "") {
+void ReadScenarioItemFile(string filename = "") {
     bool openFile = xsOpenFile(filename);
     if (openFile == false) {
         xsCloseFile();
@@ -168,32 +172,37 @@ rule ReadAP
     }
 }
 
-rule InitAP
+void InitAP() {
+    itemArray = xsArrayCreateInt(12, -1, "Item Array");
+
+    initializeStructsScript();
+    InitLocations();
+    InitBuildsanity();
+    InitScenarioLocations();
+    xsEffectAmount(cModifyTech, victoryTech, cAttrSetState, cAttributeDisable);
+
+    xsEnableRule("ConnectAP");
+}
+
+rule ConnectAP
     inactive
     minInterval 1
     maxInterval 1
 {
     if (scenarioId == -1) {
-        xsChatData("Scenario Id is not defined. Please set the Scenario Id before initializing this scenario.");
+        xsChatData("<RED>Scenario Id is not defined. Please set the Scenario Id before initializing this scenario.");
         return;
     }
-    xsChatData("Waiting for Client Connection");
+    xsChatData("<YELLOW>Waiting for Client Connection");
     if (CheckScenario() == false) {
         return;
     }
 
-    xsChatData("Client Connected!");
+    xsChatData("<GREEN>Client Connected!");
 
-    itemArray = xsArrayCreateInt(12, -1, "Item Array");
     GiveStartupItems();
-    
-    xsEffectAmount(cModifyTech, victoryTech, cAttrSetState, cAttributeDisable);
-    
-    initializeStructsScript();
-    InitLocations();
-    InitBuildsanity();
     GiveStartupBuildings();
-    InitScenarioSpecific();
+    GiveScenarioItems();
     xsEnableRule("ReadAP");
     xsDisableSelf();
 }

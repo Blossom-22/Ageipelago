@@ -1,5 +1,3 @@
-include "structs.xs";
-
 vector unitsanity = cInvalidVector;
 
 vector disableUnit(string name = "", int id = -1, float cost = 0.0, int locationId = -1) {
@@ -14,7 +12,6 @@ vector disableUnit(string name = "", int id = -1, float cost = 0.0, int location
 }
 
 void InitUnitsanityStructs() {
-    initializeStructsScript();
     defineStruct("Unit");
     defineStructAttribute("Unit", "name", TYPE_STRING);
     defineStructAttribute("Unit", "id", TYPE_INT);

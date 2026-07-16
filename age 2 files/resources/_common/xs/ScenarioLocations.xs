@@ -1,15 +1,16 @@
-include "structs.xs";
-
 vector locationList = cInvalidVector;
+int newLocationAddress = 0;
 
 vector GetLocationById(int id = -1) {
     if (id == -1) {
-        xsChatData("ContainsName: No Array Set");
+        xsChatData("GetLocationById: No Id Set");
         return (cInvalidVector);
     }
 
     int locations = structGetInt(locationList, "locations");
     int arraySize = xsArrayGetSize(locations);
+
+    xsChatData("GetLocationById: arraySize: " + arraySize);
 
     for (i = 0; < arraySize) {
         vector location = xsArrayGetVector(locations, i);
@@ -28,6 +29,11 @@ vector AddLocation(int id = -1, bool scenarioComplete = false, bool serverComple
     structSetInt(location, "id", id);
     structSetBool(location, "scenarioComplete", scenarioComplete);
     structSetBool(location, "serverComplete", serverComplete);
+
+    int locations = structGetInt(locationList, "locations");
+    xsArraySetVector(locations, newLocationAddress, location);
+    newLocationAddress++;
+
     return (location);
 }
 
@@ -40,7 +46,7 @@ int AddLocations(int idStart = -1, int idEnd = -1, bool scenarioComplete = false
     int arrayLength = idEnd - idStart;
     int array = xsArrayCreateVector(arrayLength, cInvalidVector);
 
-    for (i = idStart; < idEnd) {
+    for (i = idStart; <= idEnd) {
         vector location = AddLocation(i, scenarioComplete, serverComplete);
         xsArraySetVector(array, i - idStart, location);
     }
@@ -59,7 +65,7 @@ void InitLocations() {
 
     locationList = new("LocationList");
     int locations = xsArrayCreateVector(200, cInvalidVector, "ap-locations");
-    structSetInt(locationList, "buildings", locations);
+    structSetInt(locationList, "locations", locations);
 }
 
 int FilterCompletedNotSent() {
@@ -89,6 +95,7 @@ void SetScenarioLocationComplete(int locationId = -1) {
     }
 
     structSetBool(location, "scenarioComplete", true);
+    printStructInstance(location);
 }
 
 bool IsScenarioLocationComplete(int locationId = -1) {
