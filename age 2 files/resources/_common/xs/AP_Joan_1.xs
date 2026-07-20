@@ -7,13 +7,11 @@ void InitScenarioLocations() {
 
 void GiveScenarioItems() {
   ReadScenarioItemFile("JOAN1");
-  // Scenario-Specific - Not defeatsanity/relics
-  AddLocations(20100, 20111);
 }
 
 void main() {
   SetScenarioId(201);
-  InitAP()
+  InitAP();
 }
 
 // Scenario-specific locations

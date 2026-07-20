@@ -11,7 +11,7 @@ void GiveScenarioItems() {
 
 void main() {
   SetScenarioId(204);
-  InitAP()
+  InitAP();
 }
 
 // Scenario-specific locations
