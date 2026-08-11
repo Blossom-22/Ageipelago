@@ -53,7 +53,7 @@ vector createLocationLock(string buildingName = "", int buildingId = -1, float c
     structSetInt(building, "locationId", locationId);
     xsEffectAmount(cSetAttribute, buildingId, cDisabledFlag, 1.0, 1);
 
-    vector location = AddLocation(buildingId);
+    vector location = AddLocation(locationId);
     return (building);
 }
 

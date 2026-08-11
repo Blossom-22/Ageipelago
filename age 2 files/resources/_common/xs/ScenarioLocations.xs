@@ -25,6 +25,11 @@ vector GetLocationById(int id = -1) {
 }
 
 vector AddLocation(int id = -1, bool scenarioComplete = false, bool serverComplete = false) {
+    if (id == -1) {
+        xsChatData("Invlaid location id: " + id);
+        return (cInvalidVector);
+    }
+
     vector location = new("Location");
     structSetInt(location, "id", id);
     structSetBool(location, "scenarioComplete", scenarioComplete);
@@ -39,7 +44,7 @@ vector AddLocation(int id = -1, bool scenarioComplete = false, bool serverComple
 
 int AddLocations(int idStart = -1, int idEnd = -1, bool scenarioComplete = false, bool serverComplete = false) {
     if (idStart == -1 || idEnd == -1 || idStart > idEnd) {
-        xsChatData("Invalid start and end id for AddLocations: idStart = " + idStart + ", idEnd = " + idEnd);
+        xsChatData("Invalid start/end id for AddLocations: idStart = " + idStart + ", idEnd = " + idEnd);
         return (-1);
     }
 
