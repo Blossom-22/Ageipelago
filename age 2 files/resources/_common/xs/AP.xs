@@ -264,7 +264,11 @@ rule MarkServerLocations
     int locationCount = xsGetFileSize();
     for (i = 0; < locationCount) {
         int locationId = xsReadInt();
-        SetServerLocationComplete(locationId);
+        // Scenario locations start with the scenario's location id. values below the minimum scenario id are safe to include.
+        int locationScenarioId = locationId / 10 / 10;
+        if (locationScenarioId < MIN_SCENARIO_ID || locationScenarioId == scenarioId) {
+            SetServerLocationComplete(locationId);
+        }
     }
     xsCloseFile();
     xsDisableSelf();
