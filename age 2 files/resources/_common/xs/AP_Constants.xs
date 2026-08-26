@@ -49,6 +49,22 @@ extern const int FORTIFIED_CHURCH = 1806;
 extern const int KREPOST = 1251;
 extern const int DONJON = 1665;
 
-// Town Centers are a special case: the foundation must be disabled; here we
-// keep the id for the town center itself.
+// Town Centers and gates are a special case: the foundation must be disabled; here we
+// keep the id for the town center and gates themselves.
 extern const int townCenterId = 109;
+extern const int gateAscendingId = 64;
+extern const int gateAscendingOpenId = 78;
+extern const int gateDescendingId = 91;
+extern const int gateDescendingOpenId = 88;
+extern const int gateHorizontalId = 659;
+extern const int gateHorizontalOpenId = 661;
+extern const int gateVerticalId = 667;
+extern const int gateVerticalOpenId = 669;
+extern const int palisadeGateAscendingId = 789;
+extern const int palisadeGateAscendingOpenId = 790;
+extern const int palisadeGateDescendingId = 793;
+extern const int palisadeGateDescendingOpenId = 794;
+extern const int palisadeGateHorizontalId = 797;
+extern const int palisadeGateHorizontalOpenId = 798;
+extern const int palisadeGateVerticalId = 801;
+extern const int palisadeGateVerticalOpenId = 802;

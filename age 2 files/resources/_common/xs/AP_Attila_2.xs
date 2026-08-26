@@ -6,13 +6,13 @@ void InitScenarioSpecific() {
 }
 
 void main() {
-  AP_init();
-  InitScenarioSpecific();
   SetScenarioId(102);
+  xsEnableRule("InitAP");
 }
 
 // Scenario-specific locations
 void Victory() {
+  GiveVictory();
   AP_Check_Location(10200);
 }
 

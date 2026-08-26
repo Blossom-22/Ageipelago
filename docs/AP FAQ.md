@@ -2,7 +2,7 @@
 
 ## Global
 
-- Victory must be received at the AP Victory Pavilion, which can be researched once that mission's vanilla-equivalent task has been achieved. (UNIMPLEMENTED)
+- Victory must be received at the AP Victory Pavilion, which can be researched once that mission's vanilla-equivalent task has been achieved.
 - Many triggers contain an extra condition that requires their AP item to be found. for example, Bleda's camp, normally unlocked when beating Bleda, now addiitonally requires the Bleda's Camp item. Items can be received after meeting all other conditions.
 - Most units that can be found in a map now have items. These items unlock those units in their native scenario, and eventually will be able to be spwaned in in any scenario once.
 
@@ -33,3 +33,23 @@
 ### Attila 6: the Fall of Rome
 
 - Defeating a player also gives checks for each wonder they would have otherwise built. In theory, defeating Purple before they placed either wonder gives three checks.
+
+## Joan of Arc
+
+### Joan of Arc 1: An Unlikely Messiah
+- To receive reinforcements, the player must have unlocked their respective item from the AP world, and then must bring Joan of Arc to those units.
+- Most small camps of enemies have been turned into items. Just explore the main paths to find them all.
+- You need to unlock Joan of Arc: An Unlikely Messiah: Transports to cross the river.
+- Spoiler: Bertrand wants some venison. There are deer located just south of the Burgundian Village.
+
+### Joan of Arc 2: The Maid of Orleans
+- To complete this scenario, the player needs to first unlock Orleans and then defeat one castle.
+- There are two ways to cross the river: receive the "Joan of Arc, The Maid of Orleans: Trade Carts" item and beat the bridge guards, or receive the "Joan of Arc, The Maid of Orleans: Dock" item and find the hidden dock.
+- To unlock Orleans, the player needs "Joan of Arc, The Maid of Orleans: Orleans". Bring Joan of Arc outside the main gate by the bridge to receive the city.
+
+### Joan of Arc 3: The Cleansing of the Loire
+- To cross the river, the player needs either the Dock item and houses or "Joan of Arc, The Cleansing of the Loire: Transport Ships". If you have a dock, you can build your own transports, buddy!
+
+### Joan of Arc 5:
+- Each refugee has its own item and location. To receive a refugee, it needs to be visible and the player needs to have that refugee's item.
+- You can build some stuff because I am lazy. Have fun.
