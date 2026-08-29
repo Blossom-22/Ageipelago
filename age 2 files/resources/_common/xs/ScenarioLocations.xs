@@ -10,8 +10,6 @@ vector GetLocationById(int id = -1) {
     int locations = structGetInt(locationList, "locations");
     int arraySize = xsArrayGetSize(locations);
 
-    xsChatData("GetLocationById: arraySize: " + arraySize);
-
     for (i = 0; < arraySize) {
         vector location = xsArrayGetVector(locations, i);
         int locationId = structGetInt(location, "id");
@@ -100,7 +98,6 @@ void SetScenarioLocationComplete(int locationId = -1) {
     }
 
     structSetBool(location, "scenarioComplete", true);
-    printStructInstance(location);
 }
 
 bool IsScenarioLocationComplete(int locationId = -1) {

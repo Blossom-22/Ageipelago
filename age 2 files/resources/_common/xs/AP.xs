@@ -62,6 +62,7 @@ void AP_Read()
 {
     bool opened = xsOpenFile("AP");
     if (opened == false) {
+        xsChatData("AP read oof");
         return;
     }
 
@@ -214,6 +215,7 @@ rule ReadItems
 {
     bool opened = xsOpenFile("items");
     if (opened == false) {
+        xsChatData("No Read Items");
         return;
     }
     int itemCount = xsGetFileSize();
@@ -235,6 +237,7 @@ rule FreeItems
 {
     bool opened = xsOpenFile("free_items");
     if (opened == false) {
+        xsChatData("No Free Items");
         return;
     }
     for (i = 0; < 12) {
@@ -264,6 +267,10 @@ rule MarkServerLocations
     int locationCount = xsGetFileSize();
     for (i = 0; < locationCount) {
         int locationId = xsReadInt();
+        if (locationId == -1) {
+            continue;
+        }
+
         // Scenario locations start with the scenario's location id. values below the minimum scenario id are safe to include.
         int locationScenarioId = locationId / 10 / 10;
         if (locationScenarioId < MIN_SCENARIO_ID || locationScenarioId == scenarioId) {
