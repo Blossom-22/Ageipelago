@@ -1,12 +1,17 @@
 include "./AP.xs";
 
-void InitScenarioSpecific() {
-  ScenarioSpecificInit("JOAN5");
+void InitScenarioLocations() {
+  // Scenario-Specific - Not defeatsanity/relics
+  AddLocations(20500, 20514);
+}
+
+void GiveScenarioItems() {
+  ReadScenarioItemFile("JOAN5");
 }
 
 void main() {
   SetScenarioId(205);
-  xsEnableRule("InitAP");
+  InitAP();
 }
 
 // Scenario-specific locations

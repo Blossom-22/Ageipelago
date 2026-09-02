@@ -1,13 +1,17 @@
 include "./AP.xs";
 
+void InitScenarioLocations() {
+  // Scenario-Specific - Not defeatsanity/relics
+  AddLocations(10200, 10208);
+}
 
-void InitScenarioSpecific() {
-  ScenarioSpecificInit("ATT2");
+void GiveScenarioItems() {
+  ReadScenarioItemFile("ATT2");
 }
 
 void main() {
   SetScenarioId(102);
-  xsEnableRule("InitAP");
+  InitAP();
 }
 
 // Scenario-specific locations

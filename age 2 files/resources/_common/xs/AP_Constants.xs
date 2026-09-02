@@ -1,3 +1,5 @@
+extern const int MIN_SCENARIO_ID = 101;
+
 /* Building Ids */
 
 // Always
