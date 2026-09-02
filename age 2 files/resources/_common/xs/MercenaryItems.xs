@@ -132,7 +132,6 @@ void GiveMercenary(int itemId = -1) {
             Joan1Ram();
         }
         case 4005: {
-            xsChatData("Oh yeah");
             Joan1Swordsmen();
         }
         case 4006: {

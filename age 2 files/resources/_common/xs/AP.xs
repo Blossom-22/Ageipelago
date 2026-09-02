@@ -62,7 +62,6 @@ void AP_Read()
 {
     bool opened = xsOpenFile("AP");
     if (opened == false) {
-        xsChatData("AP read oof");
         return;
     }
 
@@ -215,7 +214,6 @@ rule ReadItems
 {
     bool opened = xsOpenFile("items");
     if (opened == false) {
-        xsChatData("No Read Items");
         return;
     }
     int itemCount = xsGetFileSize();
@@ -237,7 +235,6 @@ rule FreeItems
 {
     bool opened = xsOpenFile("free_items");
     if (opened == false) {
-        xsChatData("No Free Items");
         return;
     }
     for (i = 0; < 12) {

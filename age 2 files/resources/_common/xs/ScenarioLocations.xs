@@ -24,7 +24,7 @@ vector GetLocationById(int id = -1) {
 
 vector AddLocation(int id = -1, bool scenarioComplete = false, bool serverComplete = false) {
     if (id == -1) {
-        xsChatData("Invlaid location id: " + id);
+        xsChatData("Invalid location id: " + id);
         return (cInvalidVector);
     }
 
