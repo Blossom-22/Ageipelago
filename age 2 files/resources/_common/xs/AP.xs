@@ -2,7 +2,6 @@ include "./ItemHandler.xs";
 include "./APavilion.xs";
 
 int itemArray = -1;
-int locationArray = -1;
 
 int clientPing = -1;
 int lastPing = -1;
@@ -46,10 +45,15 @@ void AP_Write()
     xsWriteInt(completed);
     xsWriteInt(scenarioId);
     for (i = 0; < 30) {
-    xsWriteInt(i);
+        xsWriteInt(i);
     }
-    for (i = 0; < xsArrayGetSize(locationArray)) {
-        xsWriteInt(xsArrayGetInt(locationArray, i));
+    int sendingLocations = FilterCompletedNotSent();
+    for (i = 0; < xsArrayGetSize(sendingLocations)) {
+        vector location = xsArrayGetVector(sendingLocations, i);
+        int locationId = structGetInt(location, "id");
+        if (locationId != -1) {
+            xsWriteInt(locationId);
+        }
     }
     xsCloseFile();
 }
@@ -106,7 +110,7 @@ void AP_Read()
     }
     int free_locations = xsReadInt();
     if (free_locations == 1) {
-        xsEnableRule("FreeLocations");
+        xsEnableRule("MarkServerLocations");
     }
     int units = xsReadInt();
     int messages = xsReadInt();
@@ -119,16 +123,14 @@ void AP_Read()
 
 void AP_Check_Location(int locationId = -1)
 {
-    int locationSize = xsArrayGetSize(locationArray);
-    xsArrayResizeInt(locationArray, locationSize + 1);
-    xsArraySetInt(locationArray, locationSize, locationId);
+    SetScenarioLocationComplete(locationId);
 }
 
 void SetScenarioId(int id = 0) {
     scenarioId = id;
 }
 
-void ScenarioSpecificInit(string filename = "") {
+void ReadScenarioItemFile(string filename = "") {
     bool openFile = xsOpenFile(filename);
     if (openFile == false) {
         xsCloseFile();
@@ -170,31 +172,37 @@ rule ReadAP
     }
 }
 
-rule InitAP
+void InitAP() {
+    itemArray = xsArrayCreateInt(12, -1, "Item Array");
+
+    initializeStructsScript();
+    InitLocations();
+    InitBuildsanity();
+    InitScenarioLocations();
+    xsEffectAmount(cModifyTech, victoryTech, cAttrSetState, cAttributeDisable);
+
+    xsEnableRule("ConnectAP");
+}
+
+rule ConnectAP
     inactive
     minInterval 1
     maxInterval 1
 {
     if (scenarioId == -1) {
-        xsChatData("Scenario Id is not defined. Please set the Scenario Id before initializing this scenario.");
+        xsChatData("<RED>Scenario Id is not defined. Please set the Scenario Id before initializing this scenario.");
         return;
     }
-    xsChatData("Waiting for Client Connection");
+    xsChatData("<YELLOW>Waiting for Client Connection");
     if (CheckScenario() == false) {
         return;
     }
 
-    xsChatData("Client Connected!");
+    xsChatData("<GREEN>Client Connected!");
 
-    itemArray = xsArrayCreateInt(12, -1, "Item Array");
-    locationArray = xsArrayCreateInt(0, -1, "Location Array");
     GiveStartupItems();
-    
-    xsEffectAmount(cModifyTech, victoryTech, cAttrSetState, cAttributeDisable);
-    
-    InitBuildsanity();
     GiveStartupBuildings();
-    InitScenarioSpecific();
+    GiveScenarioItems();
     xsEnableRule("ReadAP");
     xsDisableSelf();
 }
@@ -244,7 +252,7 @@ rule FreeItems
     xsDisableSelf();
 }
 
-rule FreeLocations
+rule MarkServerLocations
     inactive
     minInterval 1
     maxInterval 1
@@ -256,15 +264,15 @@ rule FreeLocations
     int locationCount = xsGetFileSize();
     for (i = 0; < locationCount) {
         int locationId = xsReadInt();
-        int arraySize = xsArrayGetSize(locationArray);
-        for (j = 0; < arraySize - 1) {
-            if (xsArrayGetInt(locationArray, j) == locationId) {
-                int nextLocation = xsArrayGetInt(locationArray, j + 1);
-                xsArraySetInt(locationArray, j, nextLocation);
-                xsArraySetInt(locationArray, j + 1, locationId);
-            }
+        if (locationId == -1) {
+            continue;
         }
-        xsArrayResizeInt(locationArray, arraySize - 1);
+
+        // Scenario locations start with the scenario's location id. values below the minimum scenario id are safe to include.
+        int locationScenarioId = locationId / 10 / 10;
+        if (locationScenarioId < MIN_SCENARIO_ID || locationScenarioId == scenarioId) {
+            SetServerLocationComplete(locationId);
+        }
     }
     xsCloseFile();
     xsDisableSelf();
