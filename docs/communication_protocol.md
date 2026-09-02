@@ -100,7 +100,7 @@ The game reads these items one at a time. Each item here will have a correspondi
 
 Client -> Game
 
-the client echoes back the items that have been successfully recieved by the game. The game frees item slots in its local cache, allowing new items to be loaded into the game and activated.
+the client echoes back the items that have been successfully received by the game. The game frees item slots in its local cache, allowing new items to be loaded into the game and activated.
 
 |Name|Type|Purpose|
 |ItemId1|int|Id for the first item|
@@ -120,7 +120,7 @@ The game reads a location file that echoes back the locations sent in past packe
 
 Client -> Game
 
-Unit item handling in AoE2 is tricky, but essentially, units will be loaded into the game by spawning at a predetermined "safe" location via a "buffer". For example, if an item contains 1 Militia and 1 Scout, such as the transport troop from the Joan mission **Seige of Paris**,  Units.xsdat will be a queue-loaded buffer of unit ids, read one-by-one until the in-game unit buffer reaches zero. So the game will read 2 units, first the Militia and then the Scout, and the units will be spawned in until each unit has been spawned. The client will wait to recieve a 0 in CurrentUnitBufferRemaining before loading the next buffer item into the `units.xsdat` file.
+Unit item handling in AoE2 is tricky, but essentially, units will be loaded into the game by spawning at a predetermined "safe" location via a "buffer". For example, if an item contains 1 Militia and 1 Scout, such as the transport troop from the Joan mission **Seige of Paris**,  Units.xsdat will be a queue-loaded buffer of unit ids, read one-by-one until the in-game unit buffer reaches zero. So the game will read 2 units, first the Militia and then the Scout, and the units will be spawned in until each unit has been spawned. The client will wait to receive a 0 in CurrentUnitBufferRemaining before loading the next buffer item into the `units.xsdat` file.
 
 On reconnections, the client will update this packet with the remaining units in a given buffer item, based on the amount remaining in `<SCENARIO_NAME>.xsdat`.
 
