@@ -25,7 +25,7 @@ void GiveStartupBuildings() {
     if (opened == false) {
         return;
     }
-    int itemCount = xsGetFileSize() / 4;
+    int itemCount = xsGetFileSize() / 4; // byte to int
     for (i = 0; < itemCount) {
         UnlockBuilding(xsReadInt() - AP_BUILDING_ITEM_OFFSET);
     }
@@ -37,7 +37,7 @@ void GiveStartupItems() {
     if (opened == false) {
         return;
     }
-    int itemCount = xsGetFileSize() / 4;
+    int itemCount = xsGetFileSize() / 4; // byte to int
     for (i = 0; < itemCount) {
         int itemId = xsReadInt();
         GiveItem(itemId);

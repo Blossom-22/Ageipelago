@@ -136,7 +136,7 @@ void ReadScenarioItemFile(string filename = "") {
         xsCloseFile();
         return;
     }
-    int itemCount = xsGetFileSize() / 4;
+    int itemCount = xsGetFileSize() / 4; // byte to int
     completed = xsReadInt();
     for (i = 1; < itemCount) {
         int itemId = xsReadInt();
@@ -216,7 +216,7 @@ rule ReadItems
     if (opened == false) {
         return;
     }
-    int itemCount = xsGetFileSize();
+    int itemCount = xsGetFileSize() / 4; // byte to int
     for (i = 0; < itemCount) {
         int itemId = xsReadInt();
         if (xsArrayGetInt(itemArray, i) == -1) {
@@ -261,7 +261,7 @@ rule MarkServerLocations
     if (opened == false) {
         return;
     }
-    int locationCount = xsGetFileSize();
+    int locationCount = xsGetFileSize() / 4; // byte to int
     for (i = 0; < locationCount) {
         int locationId = xsReadInt();
         if (locationId == -1) {
