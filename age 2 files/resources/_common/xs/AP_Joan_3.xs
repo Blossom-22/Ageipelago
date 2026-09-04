@@ -51,3 +51,15 @@ void DestroyRightCastle() {
 void DestroyRearCastle() {
   AP_Check_Location(20308);
 }
+
+void DefeatsanityPurple() {
+AP_Check_Location(10117);
+}
+
+void DefeatsanityRed() {
+AP_Check_Location(10117);
+}
+
+void DefeatsanityOrange() {
+AP_Check_Location(10117);
+}
