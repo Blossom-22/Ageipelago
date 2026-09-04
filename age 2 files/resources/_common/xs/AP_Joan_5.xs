@@ -75,3 +75,19 @@ void EscortJoan() {
 void Escort6Refugees() {
   AP_Check_Location(20514);
 }
+
+void DefeatsanityRed() {
+AP_Check_Location(10117);
+}
+
+void DefeatsanityPurple() {
+AP_Check_Location(10117);
+}
+
+void DefeatsanityYellow() {
+AP_Check_Location(10117);
+}
+
+void DefeatsanityCyan() {
+AP_Check_Location(10117);
+}
