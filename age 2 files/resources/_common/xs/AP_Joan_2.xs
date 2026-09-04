@@ -63,3 +63,23 @@ void SoutheastCastle() {
 void SouthwestCastle() {
   AP_Check_Location(20211);
 }
+
+void DefeatsanityRed() {
+AP_Check_Location(10117);
+}
+
+void DefeatsanityOrange() {
+AP_Check_Location(10117);
+}
+
+void DefeatsanityPurple() {
+AP_Check_Location(10117);
+}
+
+void DefeatsanityYellow() {
+AP_Check_Location(10117);
+}
+
+void DefeatsanityCyan() {
+AP_Check_Location(10117);
+}
