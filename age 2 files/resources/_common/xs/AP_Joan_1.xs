@@ -63,3 +63,19 @@ void RiverBurgundians() {
 void BreakIntoBurgundy() {
   AP_Check_Location(20111);
 }
+
+void DefeatsanityPurple() {
+AP_Check_Location(10117);
+}
+
+void DefeatsanityGreen() {
+AP_Check_Location(10117);
+}
+
+void DefeatsanityYellow() {
+AP_Check_Location(10117);
+}
+
+void DefeatsanityOrange() {
+AP_Check_Location(10117);
+}
