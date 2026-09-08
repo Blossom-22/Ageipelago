@@ -1,5 +1,6 @@
 include "./ItemHandler.xs";
 include "./APavilion.xs";
+include "./SlotData.xs";
 
 int itemArray = -1;
 
@@ -10,8 +11,9 @@ int pingRepeatCount = 0;
 int completed = 0;
 int scenarioId = 0;
 
-float protocol = 6.5;
-int worldId = 2;
+int worldMajor = 0;
+int worldMinor = 2;
+int reportedMismatch = 0;
 int lastMessageId = -1;
 
 bool CheckScenario() {
@@ -28,23 +30,38 @@ bool CheckScenario() {
     return (true);
 }
 
+void ReportMismatch(string field = "", string received = "", string expected = "") {
+    if (reportedMismatch == 1) {
+        return;
+    }
+    reportedMismatch = 1;
+    xsChatData("<RED>Unexpected " + field + " from Client: " + received);
+    xsChatData("<RED>Expected " + field + ": " + expected);
+    xsChatData("<RED>These scenarios belong to a different seed or player slot. Reinstall the files generated for this slot.");
+    xsDisableRule("ReadAP");
+}
+
 void AP_Write()
 {
+    if (AP_SLOT_ID == -1) {
+        return;
+    }
     bool created = xsCreateFile(false);
     if (created == false) {
         return;
     }
     xsWriteInt(1);
     xsWriteInt(xsGetGameTime());
-    xsWriteFloat(protocol);
-    xsWriteInt(worldId); 
+    xsWriteInt(worldMajor);
+    xsWriteInt(AP_SLOT_ID);
     xsWriteInt(lastMessageId);
     for (i = 0; < 12) {
         xsWriteInt(xsArrayGetInt(itemArray, i));
     }
     xsWriteInt(completed);
     xsWriteInt(scenarioId);
-    for (i = 0; < 30) {
+    xsWriteInt(worldMinor);
+    for (i = 0; < 29) {
         xsWriteInt(i);
     }
     int sendingLocations = FilterCompletedNotSent();
@@ -82,20 +99,21 @@ void AP_Read()
         return;
     }
 
-    // Check World Protocol
-    float check_protocol = xsReadFloat();
-    if (check_protocol != protocol) {
-        xsChatData("<RED>Unexpected AP World Protocol from Client: " + check_protocol);
-        xsChatData("<RED>Expected Protocol: " + protocol);
+    // Check World Version
+    int check_worldMajor = xsReadInt();
+    int check_worldMinor = xsReadInt();
+    if (check_worldMajor != worldMajor || check_worldMinor != worldMinor) {
+        ReportMismatch("Age2 version",
+            "" + check_worldMajor + "." + check_worldMinor,
+            "" + worldMajor + "." + worldMinor);
         xsCloseFile();
         return;
     }
-    
-    // Check World Id
-    int check_worldId = xsReadInt();
-    if (check_worldId != worldId) {
-        xsChatData("<RED>Unexpected AP World ID from Client: %d", check_worldId);
-        xsChatData("<RED>Expected World ID: %d", worldId);
+
+    // Check Slot Id
+    int check_slotId = xsReadInt();
+    if (check_slotId != AP_SLOT_ID) {
+        ReportMismatch("AP Slot Id", "" + check_slotId, "" + AP_SLOT_ID);
         xsCloseFile();
         return;
     }
@@ -191,6 +209,10 @@ rule ConnectAP
 {
     if (scenarioId == -1) {
         xsChatData("<RED>Scenario Id is not defined. Please set the Scenario Id before initializing this scenario.");
+        return;
+    }
+    if (AP_SLOT_ID == -1) {
+        xsChatData("<RED>This install has no Archipelago slot. Connect the client and run /install.");
         return;
     }
     xsChatData("<YELLOW>Waiting for Client Connection");
