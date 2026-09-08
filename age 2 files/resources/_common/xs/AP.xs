@@ -217,6 +217,9 @@ rule ReadItems
         return;
     }
     int itemCount = xsGetFileSize() / 4; // byte to int
+    if (itemCount > 12) {   // itemArray is 12 slots; never index past it
+        itemCount = 12;
+    }
     for (i = 0; < itemCount) {
         int itemId = xsReadInt();
         if (xsArrayGetInt(itemArray, i) == -1) {
@@ -237,14 +240,20 @@ rule FreeItems
     if (opened == false) {
         return;
     }
-    for (i = 0; < 12) {
+    int freeCount = xsGetFileSize() / 4; // byte to int
+    if (freeCount > 12) {
+        freeCount = 12;
+    }
+    int freed = 0;
+    for (i = 0; < freeCount) {
         int itemId = xsReadInt();
-        if (itemId == -1) {
-            continue;
-        }
-        for (j = 0; < 12) {
-            if (xsArrayGetInt(itemArray, i) == itemId) {
-                xsArraySetInt(itemArray, i, -1);
+        if (itemId != -1) {
+            freed = 0;
+            for (j = 0; < 12) {
+                if (freed == 0 && xsArrayGetInt(itemArray, j) == itemId) {
+                    xsArraySetInt(itemArray, j, -1);
+                    freed = 1;
+                }
             }
         }
     }
