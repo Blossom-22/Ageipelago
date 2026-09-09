@@ -10,6 +10,10 @@ int pingRepeatCount = 0;
 int completed = 0;
 int scenarioId = 0;
 
+int startupGranted = 0;
+int scenarioItemsRead = 0;
+int reportedMissingItems = 0;
+
 float protocol = 6.5;
 int worldId = 2;
 int lastMessageId = -1;
@@ -133,7 +137,6 @@ void SetScenarioId(int id = 0) {
 void ReadScenarioItemFile(string filename = "") {
     bool openFile = xsOpenFile(filename);
     if (openFile == false) {
-        xsCloseFile();
         return;
     }
     int itemCount = xsGetFileSize() / 4; // byte to int
@@ -143,6 +146,7 @@ void ReadScenarioItemFile(string filename = "") {
         GiveItem(itemId);
     }
     xsCloseFile();
+    scenarioItemsRead = 1;
 }
 
 void GiveVictory() {
@@ -193,16 +197,29 @@ rule ConnectAP
         xsChatData("<RED>Scenario Id is not defined. Please set the Scenario Id before initializing this scenario.");
         return;
     }
-    xsChatData("<YELLOW>Waiting for Client Connection");
+    if (startupGranted == 0) {
+        xsChatData("<YELLOW>Waiting for Client Connection");
+    }
     if (CheckScenario() == false) {
         return;
     }
 
-    xsChatData("<GREEN>Client Connected!");
+    if (startupGranted == 0) {
+        xsChatData("<GREEN>Client Connected!");
+        GiveStartupItems();
+        GiveStartupBuildings();
+        startupGranted = 1;
+    }
 
-    GiveStartupItems();
-    GiveStartupBuildings();
     GiveScenarioItems();
+    if (scenarioItemsRead == 0) {
+        if (reportedMissingItems == 0) {
+            reportedMissingItems = 1;
+            xsChatData("<RED>Waiting for this scenario's Archipelago items...");
+        }
+        return;
+    }
+
     xsEnableRule("ReadAP");
     xsDisableSelf();
 }
