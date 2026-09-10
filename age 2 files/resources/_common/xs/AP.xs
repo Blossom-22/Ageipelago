@@ -10,6 +10,10 @@ int pingRepeatCount = 0;
 int completed = 0;
 int scenarioId = 0;
 
+int startupGranted = 0;
+int scenarioItemsRead = 0;
+int reportedMissingItems = 0;
+
 float protocol = 6.5;
 int worldId = 2;
 int lastMessageId = -1;
@@ -133,16 +137,16 @@ void SetScenarioId(int id = 0) {
 void ReadScenarioItemFile(string filename = "") {
     bool openFile = xsOpenFile(filename);
     if (openFile == false) {
-        xsCloseFile();
         return;
     }
-    int itemCount = xsGetFileSize() / 4;
+    int itemCount = xsGetFileSize() / 4; // byte to int
     completed = xsReadInt();
     for (i = 1; < itemCount) {
         int itemId = xsReadInt();
         GiveItem(itemId);
     }
     xsCloseFile();
+    scenarioItemsRead = 1;
 }
 
 void GiveVictory() {
@@ -193,16 +197,29 @@ rule ConnectAP
         xsChatData("<RED>Scenario Id is not defined. Please set the Scenario Id before initializing this scenario.");
         return;
     }
-    xsChatData("<YELLOW>Waiting for Client Connection");
+    if (startupGranted == 0) {
+        xsChatData("<YELLOW>Waiting for Client Connection");
+    }
     if (CheckScenario() == false) {
         return;
     }
 
-    xsChatData("<GREEN>Client Connected!");
+    if (startupGranted == 0) {
+        xsChatData("<GREEN>Client Connected!");
+        GiveStartupItems();
+        GiveStartupBuildings();
+        startupGranted = 1;
+    }
 
-    GiveStartupItems();
-    GiveStartupBuildings();
     GiveScenarioItems();
+    if (scenarioItemsRead == 0) {
+        if (reportedMissingItems == 0) {
+            reportedMissingItems = 1;
+            xsChatData("<RED>Waiting for this scenario's Archipelago items...");
+        }
+        return;
+    }
+
     xsEnableRule("ReadAP");
     xsDisableSelf();
 }
@@ -216,7 +233,10 @@ rule ReadItems
     if (opened == false) {
         return;
     }
-    int itemCount = xsGetFileSize();
+    int itemCount = xsGetFileSize() / 4; // byte to int
+    if (itemCount > 12) {   // itemArray is 12 slots; never index past it
+        itemCount = 12;
+    }
     for (i = 0; < itemCount) {
         int itemId = xsReadInt();
         if (xsArrayGetInt(itemArray, i) == -1) {
@@ -237,14 +257,20 @@ rule FreeItems
     if (opened == false) {
         return;
     }
-    for (i = 0; < 12) {
+    int freeCount = xsGetFileSize() / 4; // byte to int
+    if (freeCount > 12) {
+        freeCount = 12;
+    }
+    int freed = 0;
+    for (i = 0; < freeCount) {
         int itemId = xsReadInt();
-        if (itemId == -1) {
-            continue;
-        }
-        for (j = 0; < 12) {
-            if (xsArrayGetInt(itemArray, i) == itemId) {
-                xsArraySetInt(itemArray, i, -1);
+        if (itemId != -1) {
+            freed = 0;
+            for (j = 0; < 12) {
+                if (freed == 0 && xsArrayGetInt(itemArray, j) == itemId) {
+                    xsArraySetInt(itemArray, j, -1);
+                    freed = 1;
+                }
             }
         }
     }
@@ -261,7 +287,7 @@ rule MarkServerLocations
     if (opened == false) {
         return;
     }
-    int locationCount = xsGetFileSize();
+    int locationCount = xsGetFileSize() / 4; // byte to int
     for (i = 0; < locationCount) {
         int locationId = xsReadInt();
         if (locationId == -1) {
